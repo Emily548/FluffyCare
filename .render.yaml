@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: FluffyCare
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn emotion_companion.wsgi:application"
-    pythonVersion: 3.10.13
