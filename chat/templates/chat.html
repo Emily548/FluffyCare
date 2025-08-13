@@ -1,0 +1,514 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Emotion Companion Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- ✅ 可爱字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+
+    <style>
+        /* 动态主题样式，根据不同动物改变背景颜色和按钮颜色 */
+        body.theme-pig {
+            background: #fff4f8;
+        }
+        body.theme-pig nav {
+            background-color: #ff8fab;
+        }
+        body.theme-pig h2 {
+            color: #ff8fab;
+        }
+        body.theme-pig .btn-send {
+            background-color: #ff8fab;
+        }
+        body.theme-pig .btn-send:hover {
+            background-color: #e25482;
+        }
+        
+        body.theme-pig .message.user {
+            background-color: #ffd1e2;
+        }
+        body.theme-pig .message.bot {
+            background-color: #ffe4e7;
+        }
+        
+        body.theme-dog {
+            background: #eef8ff;
+        }
+        body.theme-dog nav {
+            background-color: #6bbaff;
+        }
+        body.theme-dog h2 {
+            color: #6bbaff;
+        }
+        body.theme-dog .btn-send {
+            background-color: #6bbaff;
+        }
+        body.theme-dog .btn-send:hover {
+            background-color: #429de3;
+        }
+        body.theme-dog .message.user {
+            background-color: #a3c9ff;
+        }
+        body.theme-dog .message.bot {
+            background-color: #d4eaff;
+        }
+        
+        body.theme-rabbit {
+            background: #f9f0ff;
+        }
+        body.theme-rabbit nav {
+            background-color: #c9a9ff;
+        }
+        body.theme-rabbit h2 {
+            color: #c9a9ff;
+        }
+        body.theme-rabbit .btn-send {
+            background-color: #c9a9ff;
+        }
+        body.theme-rabbit .btn-send:hover {
+            background-color: #9d72e8;
+        }
+        body.theme-rabbit .message.user {
+            background-color: #e1d5ff;
+        }
+        body.theme-rabbit .message.bot {
+            background-color: #f0d9ff;
+        }
+        
+        /* 弹窗背景色 */
+        #alert-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            text-align: center;
+            z-index: 999;
+            width: 320px;
+        }
+        body.theme-pig #alert-popup {
+            background: #fff0f1;
+        }
+        body.theme-dog #alert-popup {
+            background: #d6e7ff;
+        }
+        body.theme-rabbit #alert-popup {
+            background: #f2e4ff;
+        }
+        
+        /* 按钮基础样式 */
+        .popup-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 10px;
+            border: none;
+            margin: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        /* talk 按钮（深色） */
+        body.theme-pig .popup-btn.talk {
+            background-color: #e25482;
+            color: white;
+        }
+        body.theme-dog .popup-btn.talk {
+            background-color: #429de3;
+            color: white;
+        }
+        body.theme-rabbit .popup-btn.talk {
+            background-color: #9d72e8;
+            color: white;
+        }
+        
+        /* ignore 按钮（浅灰） */
+        .popup-btn.ignore {
+            background-color: #e0e0e0;
+            color: #555;
+        }
+        .popup-btn.ignore:hover {
+            background-color: #c8c8c8;
+        }
+        .popup-btn.talk:hover {
+            opacity: 0.9;
+        }
+        
+        /* 保留原有样式 */
+        body {
+            font-family: "Helvetica Neue", sans-serif;
+            color: #333;
+            margin: 0;
+        }
+        nav {
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+        }
+        nav .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        nav .logo-section img {
+            height: 40px;
+            border-radius: 8px;
+        }
+        nav h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+        nav .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        nav .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        nav .nav-links a:hover {
+            background: rgba(0,0,0,0.1);
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            padding: 20px;
+            gap: 20px;
+        }
+        #camera-section {
+            width: 25%;
+            text-align: center;
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        #emotion-avatar {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .emotion-status {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #4a7f4a;
+        }
+        .chat-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-family: 'Patrick Hand', cursive;
+            font-size: 28px;
+        }
+        #chat-box {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            background-color: #f9fff9;
+            margin-bottom: 20px;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .user {
+            background-color: #d4f8d4;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .bot {
+            background-color: #e9f3e9;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+        #input-area {
+            display: flex;
+            gap: 10px;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 14px;
+        }
+        input {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        </style>
+        
+</head>
+<body class="theme-{{ session.animal }}">
+
+<nav>
+    <div class="logo-section">
+        <img src="{% static 'logo.png' %}" alt="Logo">
+        <h1>FluffyCare</h1>
+    </div>
+    <div class="nav-links">
+        <a href="/">Sessions</a>
+        <a href="/trend/{{ session.id }}/page/">Emotion Trend</a>
+        <a href="/logout/">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="camera-section">
+        <!-- ✅ 默认使用动物的 neutral 表情 -->
+        <img id="emotion-avatar" src="{% static 'emotions/' %}{{ session.animal }}/neutral.png" alt="Emotion Avatar">
+        <div class="emotion-status" id="emotion-status">Emotion: 😐 neutral</div>
+    </div>
+
+    <div class="chat-section">
+        <h2>{{ session.name }}</h2>
+
+        <div id="chat-box">
+            {% for log in logs %}
+                <div class="message user">{{ log.user_message }}</div>
+                <div class="message bot">{{ log.gpt_response }}</div>
+            {% endfor %}
+        </div>
+
+        <div id="input-area">
+            <input type="text" id="user-input" placeholder="Enter your message...">
+            <input type="hidden" id="emotion" value="neutral">
+            <button class="btn-send" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+
+<div id="alert-popup">
+    <h3>
+        <img id="popup-logo" src="{% static 'animals/' %}{{ session.animal }}.png" alt="Animal" style="height:40px; vertical-align:middle; margin-right:8px;">
+        <span id="popup-title"></span>
+    </h3>
+    <p id="alert-text"></p>
+    <button class="popup-btn ignore" onclick="closePopup()">Ignore</button>
+    <button class="popup-btn talk" onclick="startChat()">Sure</button>
+</div>
+<script>
+    let currentDetectedEmotion = "neutral";
+let lastEmotion = "neutral";
+let lastAskedTime = 0;
+let lastPopupTime = 0;
+let userLanguage = "en";
+let negativeCount = 0;
+let alertShown = false;
+
+const NEGATIVE_EMOTIONS = ["sad", "angry", "fear", "disgust"];
+const COOLDOWN = 5 * 60 * 1000; // 5分钟
+const emotionIcons = {
+    happy: "😊", sad: "😢", angry: "😠", surprise: "😲", fear: "😨", disgust: "🤢", neutral: "😐"
+};
+
+// 弹窗内容根据动物类型动态变化
+const animalPopupMessages = {
+    pig: { 
+        title: "Oink Oink~", 
+        text: "Oink oink~ Are you okay? Do you want to talk?", 
+        icon: "/static/animals/pig.jpg" 
+    },
+    dog: { 
+        title: "Woof Woof~", 
+        text: "Woof woof~ Are you okay? Do you want to talk?", 
+        icon: "/static/animals/dog.jpg" 
+    },
+    rabbit: { 
+        title: "Hop Hop~", 
+        text: "Hop hop~ Are you okay? Do you want to talk?", 
+        icon: "/static/animals/rabbit.jpg" 
+    }
+};
+
+function appendSystemMessage(message) {
+    const chatBox = document.getElementById("chat-box");
+    const botMsg = document.createElement("div");
+    botMsg.className = "message bot";
+    botMsg.innerText = message;
+    chatBox.appendChild(botMsg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function detectEmotion() {
+    const canvas = document.createElement('canvas');
+    const video = document.createElement('video');
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        video.srcObject = stream;
+        video.play();
+
+        setTimeout(() => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            stream.getTracks().forEach(track => track.stop());
+
+            canvas.toBlob(async (blob) => {
+                const formData = new FormData();
+                formData.append('frame', blob, 'frame.jpg');
+                try {
+                    const response = await fetch('/detect-emotion/', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+                    if (data.emotion) {
+                        currentDetectedEmotion = data.emotion;
+                        document.getElementById("emotion").value = data.emotion;
+                        const icon = emotionIcons[data.emotion] || "😐";
+                        document.getElementById("emotion-status").innerText = `Emotion: ${icon} ${data.emotion}`;
+
+                        // 根据当前动物更新头像表情
+                        document.getElementById("emotion-avatar").src = `/static/emotions/{{ session.animal }}/${data.emotion}.png`;
+
+                        if (NEGATIVE_EMOTIONS.includes(data.emotion)) {
+                            const now = Date.now();
+                        
+                            // 检查浏览器本地上次提醒时间（localStorage 共享时间）
+                            const lastTimeStr = localStorage.getItem("last_care_time");
+                            const lastTime = lastTimeStr ? parseInt(lastTimeStr) : 0;
+                        
+                            if (now - lastTime > COOLDOWN) {
+                                const friendlyPrompt = userLanguage === "zh"
+                                    ? "你还好吗？想聊聊嘛？"
+                                    : "Are you okay? Do you want to talk?";
+                                appendSystemMessage(friendlyPrompt);
+                                localStorage.setItem("last_care_time", now.toString());
+                            }
+                        }
+                        
+
+                        if (NEGATIVE_EMOTIONS.includes(data.emotion)) {
+                            negativeCount += 1;
+                        } else {
+                            negativeCount = 0;
+                            alertShown = false;
+                        }
+
+                        if (negativeCount >= 3 && (now - lastPopupTime > COOLDOWN)) {
+                            const onChatPage = window.location.pathname.includes("/chat/");
+                            const pageVisible = document.visibilityState === "visible";
+                            if (onChatPage && pageVisible) {
+                                showPopup();
+                            } else {
+                                showBrowserNotification();
+                            }
+                            lastPopupTime = now;
+                        }
+                    }
+                } catch (error) {
+                    console.error("Emotion detection error:", error);
+                }
+            }, 'image/jpeg');
+        }, 1000);
+    });
+}
+
+setInterval(detectEmotion, 2000);
+
+function showPopup() {
+    const animal = "{{ session.animal }}"; // 获取动物类型
+    const popupMessage = animalPopupMessages[animal] || animalPopupMessages["pig"]; // 默认猪的弹窗
+
+    // 更新弹窗的内容
+    document.getElementById("alert-popup").style.display = 'block';
+    document.getElementById("alert-popup").querySelector("h3").innerHTML = `<img src="${popupMessage.icon}" alt="${animal}" style="height:40px; vertical-align:middle; margin-right:8px;"> ${popupMessage.title}`;
+    document.getElementById("alert-text").innerText = popupMessage.text;
+}
+
+function closePopup() {
+    document.getElementById("alert-popup").style.display = 'none';
+}
+
+function startChat() {
+    closePopup();
+    document.getElementById("user-input").focus();
+}
+
+function showBrowserNotification() {
+    if (Notification.permission === "granted") {
+        const notification = new Notification("Emo Care～", {
+            body: "Are you okay? Do you want to talk?",
+            icon: "/static/emoji_icons/left-icon.png",
+            tag: "emo-care"
+        });
+        notification.onclick = function(event) {
+            event.preventDefault();
+            window.open("http://localhost:8000/chat/{{ session.id }}/", "_blank");
+        };
+    }
+}
+
+if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+}
+
+async function sendMessage() {
+    const input = document.getElementById("user-input");
+    const emotion = document.getElementById("emotion").value;
+    const styleElement = document.getElementById("style-selector");
+    const style = styleElement ? styleElement.value : "";
+    const message = input.value.trim();
+    if (!message) return;
+
+    const chatBox = document.getElementById("chat-box");
+    const userMsg = document.createElement("div");
+    userMsg.className = "message user";
+    userMsg.innerText = message;
+    chatBox.appendChild(userMsg);
+    input.value = "";
+
+    try {
+        const sessionId = "{{ session.id }}";
+        const response = await fetch(`/chat/${sessionId}/send/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message, emotion, style })
+        });
+
+        const data = await response.json();
+
+        const botMsg = document.createElement("div");
+        botMsg.className = "message bot";
+        botMsg.innerText = data.response || "Assistant: There's an error.";
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    } catch (error) {
+        console.error("Send failed:", error);
+    }
+}
+
+</script>
+
+</body>
+</html>

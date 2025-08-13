@@ -1,0 +1,82 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f8fb;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 650px;
+    margin: auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.05);
+  }
+  
+  header {
+    text-align: center;
+  }
+  
+  .subtitle {
+    color: #7a9c9f;
+    font-size: 14px;
+  }
+  
+  #mood-display {
+    font-size: 14px;
+    color: #444;
+    background-color: #e7f5ee;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+  }
+  
+  #chat-box {
+    height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #dcdcdc;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: #fdfdfd;
+  }
+  
+  .msg {
+    margin: 10px 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 80%;
+  }
+  
+  .user {
+    background-color: #cce5ff;
+    align-self: flex-end;
+    text-align: right;
+  }
+  
+  .bot {
+    background-color: #d9fdd3;
+    align-self: flex-start;
+  }
+  
+  form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  #user-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  select, button {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #e3f4ec;
+  }
+  

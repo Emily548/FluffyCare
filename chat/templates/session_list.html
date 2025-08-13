@@ -1,0 +1,167 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Emotion Companion - Sessions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            background: #f7fdf9;
+            font-family: "Helvetica Neue", sans-serif;
+            color: #333;
+            margin: 0;
+        }
+
+        nav {
+            background-color: #6abf69;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+        }
+
+        nav .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav .logo-section img {
+            height: 40px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        nav h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        nav .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        nav .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        nav .nav-links a:hover {
+            background: #57a257;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #6abf69;
+            margin-bottom: 20px;
+        }
+
+        .session-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .session-item {
+            background: #f1f9f1;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+
+        .session-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .session-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .session-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-chat {
+            background-color: #6abf69;
+        }
+
+        .btn-chat:hover {
+            background-color: #57a257;
+        }
+
+        .btn-trend {
+            background-color: #1e90ff;
+        }
+
+        .btn-trend:hover {
+            background-color: #187bcd;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo-section">
+        <img src="{% static 'logo.png' %}" alt="Logo">
+        <h1>FluffyCare</h1>
+    </div>
+    <div class="nav-links">
+        <a href="/">Sessions</a>
+        <a href="/logout/">Logout</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h2>Choose Your Animal Companion</h2>
+
+    <div class="session-list">
+        {% for session in sessions %}
+        <div class="session-item">
+            <img src="{% static session.image %}" alt="{{ session.name }}">
+            <div class="session-name">{{ session.name }}</div>
+            <div class="session-actions">
+                <a class="btn btn-chat" href="/chat/{{ session.id }}/">Chat</a>
+                <a class="btn btn-trend" href="/trend/{{ session.id }}/page/">Trend</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
