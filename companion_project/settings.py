@@ -3,11 +3,14 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-=)+%k!vo#n$7*v*z%=0c#@=o&*d+92+wrjcmgd*cl9!6@85rt7"
+# ✅ 从环境变量中读取 SECRET_KEY，若不存在则使用默认值
+SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-secret-key")
 
-DEBUG = True
+# ✅ 从环境变量中读取 DEBUG，默认开启（注意是字符串比较）
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = []
+# ✅ 从环境变量读取 ALLOWED_HOSTS，支持多个域名用逗号隔开
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -68,14 +71,15 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+# ✅ 静态资源配置
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-
-# ✅ 自定义用户模型
-AUTH_USER_MODEL = "chat.User"
 
 # ✅ 用户上传头像的媒体配置
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# ✅ 自定义用户模型
+AUTH_USER_MODEL = "chat.User"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
